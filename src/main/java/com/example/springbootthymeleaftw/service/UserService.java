@@ -1,48 +1,65 @@
 package com.example.springbootthymeleaftw.service;
 
+import com.example.springbootthymeleaftw.model.entity.RoleEntity;
 import com.example.springbootthymeleaftw.model.entity.UserEntity;
 import com.example.springbootthymeleaftw.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-/* In service lies the code logic, often the bridge between database and controller */
 @Service
-public class UserService { /* This class can also be converted in a record,
-                              but pay attention records are, sometimes, problematic in unit-tests */
-    /* *
-    * As we can see the @Autowierd annotation can be place both on field and constructor;
-    * Is possible but, field injection is not recommended, so try to use it on Constructor
-    * or use @RequiredArgsConstructor from Lombok
-    * */
-    @Autowired @Qualifier("runtimeUser")
+@RequiredArgsConstructor
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    /* Here we can choose the preferred database provider, in our case */
-    public UserService(@Qualifier("runtimeUser") UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UserEntity> optUser = userRepository.findByEmail(email);
+        if (optUser.isPresent()) {
+            UserEntity appUser = optUser.get();
+            return new User(
+                    appUser.getUsername(), appUser.getPassword(), true, true, true, true,
+                    /* User Roles */
+                    Objects.isNull(appUser.getRoles()) ?
+                            new ArrayList(List.of(new SimpleGrantedAuthority("default")))
+                            : appUser.getRoles()
+                                .stream()
+                                .map(RoleEntity::getName)
+                                .map(SimpleGrantedAuthority::new)
+                                .toList()
+            );
+        }
+        throw new UsernameNotFoundException(email);
     }
 
-    public List<UserEntity> getAll() {
-        return userRepository.findAll();
-    }
 
-    public Optional<UserEntity> get(String username, String password){
-        return userRepository.findUserByUsernameAndPassword(username, password);
+    public void save(UserEntity user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
+    public void login(String email, String password){
+        UserDetails userDetails = this.loadUserByUsername(email);
 
-    public void addUser(UserEntity userEntity) {
-        userRepository.addUser(userEntity);
-    }
+        if(Objects.isNull(userDetails))
+            return;
 
-    public void updateUser(String username, String password, UserEntity userEntity) {
-        userRepository.updateUser(username, password, userEntity);
-    }
-
-    public List<UserEntity> getByUsername(String username) {
-        return userRepository.findAllByUsername(username);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 }
