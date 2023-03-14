@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Entity
 @Data
-@Table(name = "role", schema = "public", catalog = "college")
+@Table(name = "role", schema = "public")
 public class RoleEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +23,11 @@ public class RoleEntity {
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore
     private Collection<UserEntity> users;
+
+    @Override
+    public String toString() {
+        return "RoleEntity{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

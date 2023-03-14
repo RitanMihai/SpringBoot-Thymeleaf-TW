@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+</head>
+<head th:include="fragments/components::header">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="shadow p-3 mb-5 bg-body rounded">
+        <h2 class="form-heading text-center">Add Course</h2>
+        <form action="#"
+              th:action="@{/course/post}"
+              th:object="${course}"
+              method="post"
+              class="form-signin">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" th:field="*{name}" id="name" placeholder="Name">
+            <label for="credits">Credits</label>
+            <input class="form-control" type="text" th:field="*{credits}" id="credits" placeholder="Credits">
+
+            <p/>
+
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <a th:href="@{/courses}"
+                       class="btn btn-danger btn-lg"
+                       style="padding-left: 2.5rem; padding-right: 2.5rem; margin-right: 2.5rem">Cancel</a>
+                </div>
+                <div class="input-group-btn">
+                    <input type="submit" value="Add Course"
+                           class="btn btn-primary btn-lg">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

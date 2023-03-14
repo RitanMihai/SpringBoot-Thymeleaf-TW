@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <div th:include="fragments/components::header"></div>
+</head>
+
+<body>
+<div class="container mt-5">
+    <div th:switch="${courses}">
+        <h2 th:case="null">No courses yet!</h2>
+        <div th:case="*" class="shadow p-3 mb-5 bg-body rounded">
+            <h2 class="form-heading text-center">Courses</h2>
+            <div class="container mt-1">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Credits</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="course : ${courses}">
+                        <td th:text="${course.id}"></td>
+                        <td th:text="${course.name}"></td>
+                        <td th:text="${course.credits}"></td>
+                        <td><a th:href="@{course/edit/{id}(id=${course.id})}">Edit</a></td>
+                        <td><a th:href="@{course/delete/{id}(id=${course.id})}">Delete</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <a th:href="@{/}"
+                           class="btn btn-danger btn-lg"
+                           style="padding-left: 2.5rem; padding-right: 2.5rem; margin-right: 2.5rem">Cancel</a>
+                    </div>
+                    <div class="input-group-btn">
+                        <a th:href="@{course}" class="btn btn-primary btn-lg">Add course</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

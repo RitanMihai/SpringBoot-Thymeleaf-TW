@@ -23,6 +23,7 @@ public class UserValidatorService implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "user.isUsernameEmpty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "user.isPasswordEmpty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "roles", "role.isRoleEmpty");
 
         /* Valid email regex pattern - https://owasp.org/www-community/OWASP_Validation_Regex_Repository */
         /* Typical email format: email@domain.com */

@@ -33,7 +33,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .antMatchers( "/**").permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/login") /* We will get a default UI page if no one is not mention */
                 //.failureUrl("/login-error") //if you want a separate page for failed auth.
                 .permitAll()
                 .and()
@@ -52,6 +52,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); /* Accept int parameter as complexity strength, by default 10*/
     }
 }

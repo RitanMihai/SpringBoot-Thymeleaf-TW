@@ -1,10 +1,11 @@
 package com.example.springbootthymeleaftw.repository;
 
-import com.example.springbootthymeleaftw.model.entity.RoleEntity;
+import com.example.springbootthymeleaftw.model.entity.CourseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
-    RoleEntity findByName(String role);
+public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
 }

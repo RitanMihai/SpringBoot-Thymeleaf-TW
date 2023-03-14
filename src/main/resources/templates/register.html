@@ -5,12 +5,11 @@
 <head>
     <div th:include="fragments/components::header"></div>
 </head>
-
 <body>
 
 <div class="container mt-5">
     <div class="shadow p-3 mb-5 bg-body rounded">
-        <form method="POST" class="form-signin" th:object="${userForm}" th:action="@{/register}">
+        <form method="POST"  th:object="${userForm}" th:action="@{/register}">
 
             <h2 class="form-heading text-center">Create your account</h2>
 
@@ -64,6 +63,16 @@
                     <label for="confirmPassword">Confirm Password</label>
                     <span class="has-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
                 </div>
+
+                <div class="form-floating mb-3">
+                    <!-- -Thymeleaf  will automatically check the values of each selected option -->
+                    <select title="Select a role" id="roles" name="roles" th:field="*{roles}" class="selectpicker"
+                            multiple data-live-search="true">
+                        <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}">
+                        </option>
+                    </select>
+                    <span class="has-error" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></span>
+                </div>
             </div>
 
             <!-- Login/Register -->
@@ -78,7 +87,6 @@
                     <a href="/login" class="link-danger">Login</a>
                 </p>
             </div>
-
         </form>
     </div>
 </div>
